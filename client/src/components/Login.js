@@ -6,10 +6,16 @@ const Login = () => {
   // make a post request to retrieve a token from the api
   // when you have handled the token, navigate to the BubblePage route
 
+  const history = useHistory();
+
   const [credentials, setCredentials] = useState({
     username: "",
     password: "",
   });
+
+  console.log("credentials", credentials);
+  const [error, setError] = useState("");
+  console.log("error state: ", error);
 
   const handleChange = (e) => {
     setCredentials({
@@ -22,8 +28,15 @@ const Login = () => {
     e.preventDefault();
     axiosWithAuth()
       .post("/api/login", credentials)
-      .then((res) => console.log("success response at login: ", res))
-      .catch((err) => console.log("error at login: ", err));
+      .then((res) => {
+        console.log("success response at Login: ", res.data);
+        localStorage.setItem("token", JSON.stringify(res.data.payload));
+        history.push("/api/colors");
+      })
+      .catch((err) => {
+        console.log("error at Login: ", err.message);
+        setError(err.message);
+      });
     setCredentials({
       username: "",
       password: "",
@@ -49,6 +62,7 @@ const Login = () => {
         />
         <button>Login</button>
       </form>
+      {error.length > 0 ? <p>The username or password are incorrect</p> : null}
     </div>
   );
 };
