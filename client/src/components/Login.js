@@ -13,9 +13,7 @@ const Login = () => {
     password: "",
   });
 
-  console.log("credentials", credentials);
   const [error, setError] = useState("");
-  console.log("error state: ", error);
 
   const handleChange = (e) => {
     setCredentials({
@@ -29,12 +27,10 @@ const Login = () => {
     axiosWithAuth()
       .post("/api/login", credentials)
       .then((res) => {
-        console.log("success response at Login: ", res.data);
         localStorage.setItem("token", JSON.stringify(res.data.payload));
         history.push("/api/colors");
       })
       .catch((err) => {
-        console.log("error at Login: ", err.message);
         setError(err.message);
       });
     setCredentials({
