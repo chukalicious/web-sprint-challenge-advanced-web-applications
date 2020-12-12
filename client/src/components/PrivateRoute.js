@@ -1,7 +1,7 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
 
-const PrivateRoute = () => {
+const PrivateRoute = (props) => {
   const { children, ...rest } = props;
   return (
     <Route
@@ -10,9 +10,7 @@ const PrivateRoute = () => {
         if (localStorage.getItem("token")) {
           return children;
         } else {
-          return (
-            <Redirect to={{ pathname: "/login", state: { from: location } }} />
-          );
+          return <Redirect to={{ pathname: "/", state: { from: location } }} />;
         }
       }}
     />
