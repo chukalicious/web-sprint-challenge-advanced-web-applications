@@ -20,6 +20,10 @@ const Login = () => {
 
   const login = (e) => {
     e.preventDefault();
+    axiosWithAuth()
+      .post("/api/login", credentials)
+      .then((res) => console.log("success response at login: ", res))
+      .catch((err) => console.log("error at login: ", err));
     setCredentials({
       username: "",
       password: "",
@@ -30,10 +34,10 @@ const Login = () => {
     <div>
       <h1>Welcome to the Bubble App!</h1>
       <p>Build a login page here</p>
-      <form>
+      <form onSubmit={login}>
         <input
           name="username"
-          placeholder="Enter username"
+          placeholder="Enter Username"
           value={credentials.username}
           onChange={handleChange}
         />
