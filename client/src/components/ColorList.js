@@ -8,6 +8,10 @@ const initialColor = {
 
 const ColorList = ({ colors, updateColors }) => {
   console.log(colors);
+  console.log(
+    "Update Colors props sent to the ColorList componet from the Bubbles.js: ",
+    updateColors
+  );
   const [editing, setEditing] = useState(false);
   const [colorToEdit, setColorToEdit] = useState(initialColor);
   console.log("colorToEdit: ", colorToEdit);
@@ -21,7 +25,7 @@ const ColorList = ({ colors, updateColors }) => {
     axiosWithAuth()
       .put(`api/colors/${id}`, colr)
       .then((res) => {
-        console.log("res when I PUT: ", res.data);
+        console.log("res when I PUT: ", res);
         setColorToEdit({
           ...colorToEdit,
           color: res.data.color,
