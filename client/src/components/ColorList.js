@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { axiosWithAuth } from "../utils/axiosWithAuth";
 
 const initialColor = {
@@ -6,12 +7,12 @@ const initialColor = {
   code: { hex: "" },
 };
 
-const ColorList = ({ colors, updateColors }) => {
-  console.log(colors);
-  console.log(
-    "Update Colors props sent to the ColorList componet from the Bubbles.js: ",
-    updateColors
-  );
+// const ColorList = ({ colors, updateColors }) => {
+const ColorList = (props) => {
+  console.log("props to the ColorList component: ", props.colors);
+
+  const { id } = useParams();
+
   const [editing, setEditing] = useState(false);
   const [colorToEdit, setColorToEdit] = useState(initialColor);
   console.log("colorToEdit: ", colorToEdit);
@@ -21,30 +22,38 @@ const ColorList = ({ colors, updateColors }) => {
     setColorToEdit(color);
   };
 
-  const putCall = (id, colr) => {
-    axiosWithAuth()
-      .put(`api/colors/${id}`, colr)
-      .then((res) => {
-        console.log("res when I PUT: ", res);
-        setColorToEdit({
-          ...colorToEdit,
-          color: res.data.color,
-          code: res.data.code,
-        });
-      })
-      .catch((err) => console.log(err));
-  };
-
   const saveEdit = (e) => {
     e.preventDefault();
-    putCall(8, colorToEdit);
+    axiosWithAuth()
+      .put(`api/colors/${colorToEdit.id}`, colorToEdit)
+      .then((res) => {
+        //
+        //here I am, not doing anything with the res data
+        //
+        const colorId = res.data;
+        console.log("colorId: ", colorId);
+        const foundColorId = props.colors.find((clr) => clr.id == colorId.id);
+        console.log("foundColorId: ", foundColorId);
+        props.setColorList(
+          props.colors.map((cl) => {
+            if (cl.id === foundColorId.id) {
+              return foundColorId;
+            }
+            return cl;
+          })
+        );
+      })
+      .catch((err) => console.log(err.message));
     // Make a put request to save your updated color
     // think about where will you get the id from...
     // where is is saved right now?
   };
 
   const deleteColor = (color) => {
-    axiosWithAuth().delete().then().catch();
+    axiosWithAuth()
+      .delete("api/colors")
+      .then((res) => console.log("res in the delete: ", res.data))
+      .catch((err) => console.log(err));
     // make a delete request to delete this color
   };
 
@@ -52,7 +61,7 @@ const ColorList = ({ colors, updateColors }) => {
     <div className="colors-wrap">
       <p>colors</p>
       <ul>
-        {colors.map((color) => (
+        {props.colors.map((color) => (
           <li key={color.color} onClick={() => editColor(color)}>
             <span>
               <span
@@ -80,7 +89,10 @@ const ColorList = ({ colors, updateColors }) => {
             color name:
             <input
               onChange={(e) =>
-                setColorToEdit({ ...colorToEdit, color: e.target.value })
+                setColorToEdit({
+                  ...colorToEdit,
+                  color: e.target.value,
+                })
               }
               value={colorToEdit.color}
             />
