@@ -11,13 +11,11 @@ const initialColor = {
 const ColorList = (props) => {
   console.log("props to the ColorList component: ", props.colors);
 
-  const { push } = useHistory();
-
   const [editing, setEditing] = useState(false);
   const [colorToEdit, setColorToEdit] = useState(initialColor);
   console.log("colorToEdit: ", colorToEdit);
 
-  useEffect(() => {}, [colorToEdit]);
+  // useEffect(() => {}, [colorToEdit]);
 
   const editColor = (color) => {
     setEditing(true);
@@ -33,13 +31,13 @@ const ColorList = (props) => {
         console.log("foundColorId: ", foundColorId);
         props.setColorList(
           props.colors.map((cl) => {
-            if (cl.id === foundColorId.id) {
-              return foundColorId;
+            if (cl.id === colorToEdit.id) {
+              return colorToEdit;
             }
             return cl;
           })
         );
-        push(`/api/colors/`);
+        // props.updateColors();
       })
       .catch((err) => console.log(err.message));
     // Make a put request to save your updated color
@@ -50,7 +48,9 @@ const ColorList = (props) => {
   const deleteColor = (color) => {
     axiosWithAuth()
       .delete(`api/colors/${color.id}`)
-      .then((res) => console.log("res in the delete: ", res.data))
+      .then((res) => {
+        props.setColorList(props.colors.filter((cl) => cl.id !== color.id));
+      })
       .catch((err) => console.log(err));
     // make a delete request to delete this color
   };
