@@ -27,8 +27,9 @@ const ColorList = (props) => {
     axiosWithAuth()
       .put(`api/colors/${colorToEdit.id}`, colorToEdit)
       .then((res) => {
-        const foundColorId = props.colors.find((clr) => clr.id === res.data.id);
-        console.log("foundColorId: ", foundColorId);
+        //seems the 2 lines below are useless for this type of edit
+        //const foundColorId = props.colors.find((clr) => clr.id === res.data.id);
+        //console.log("foundColorId: ", foundColorId);
         props.setColorList(
           props.colors.map((cl) => {
             if (cl.id === colorToEdit.id) {
